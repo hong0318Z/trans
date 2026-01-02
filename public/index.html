@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation Sync - 양방향 동기화 번역</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Translation Sync</h1>
+      <p class="subtitle">번역본에서 삭제하면 원본도 함께 삭제됩니다</p>
+    </header>
+
+    <div class="language-selector">
+      <div class="lang-group">
+        <label for="sourceLang">원본 언어</label>
+        <select id="sourceLang">
+          <option value="ko">한국어</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+      <button id="swapLangs" class="swap-btn" title="언어 교체">⇄</button>
+      <div class="lang-group">
+        <label for="targetLang">번역 언어</label>
+        <select id="targetLang">
+          <option value="en" selected>English</option>
+          <option value="ko">한국어</option>
+          <option value="ja">日本語</option>
+          <option value="zh">中文</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <textarea id="sourceText" placeholder="번역할 텍스트를 입력하세요..."></textarea>
+      <button id="translateBtn" class="translate-btn">번역하기</button>
+    </div>
+
+    <div class="translation-area">
+      <div class="panel">
+        <div class="panel-header">
+          <h2>원본 텍스트</h2>
+          <span class="sentence-count" id="originalCount">0 문장</span>
+        </div>
+        <div id="originalSentences" class="sentences-container"></div>
+      </div>
+
+      <div class="sync-indicator">
+        <div class="sync-line"></div>
+        <span class="sync-label">동기화</span>
+        <div class="sync-line"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>번역 텍스트</h2>
+          <span class="sentence-count" id="translatedCount">0 문장</span>
+        </div>
+        <div id="translatedSentences" class="sentences-container"></div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-box">
+        <h3>원본 결과</h3>
+        <div id="originalResult" class="result-text"></div>
+        <button class="copy-btn" data-target="originalResult">복사</button>
+      </div>
+      <div class="result-box">
+        <h3>번역 결과</h3>
+        <div id="translatedResult" class="result-text"></div>
+        <button class="copy-btn" data-target="translatedResult">복사</button>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h3>사용법</h3>
+      <ul>
+        <li>텍스트를 입력하고 '번역하기' 버튼을 클릭하세요</li>
+        <li>각 문장 옆의 <span class="delete-icon">×</span> 버튼을 클릭하면 해당 문장이 <strong>양쪽 모두</strong>에서 삭제됩니다</li>
+        <li>원본 또는 번역 어느 쪽에서 삭제해도 동기화됩니다</li>
+        <li>문장 위에 마우스를 올리면 매핑된 문장이 하이라이트됩니다</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
