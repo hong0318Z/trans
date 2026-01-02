@@ -440,3 +440,20 @@ header h1 {
   padding: 40px;
   color: #666;
 }
+
+.empty-state small {
+  display: block;
+  margin-top: 10px;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+/* 단어 모드 스타일 */
+.sentence-item.word-mode {
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #1a2a4e 0%, #1a1a2e 100%);
+}
+
+.sentence-item.word-mode .sentence-text {
+  font-weight: 500;
+}

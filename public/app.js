@@ -1,5 +1,6 @@
 // 전역 상태 관리
 let mappings = []; // {id, original, translated} 배열
+let isWordMode = false; // 쉼표 구분 단어 모드
 
 // DOM 요소
 const sourceText = document.getElementById('sourceText');
@@ -25,10 +26,10 @@ function showToast(message, isError = false) {
   }, 3000);
 }
 
-// 문장 아이템 생성
+// 아이템 생성 (단어 또는 문장)
 function createSentenceItem(mapping, type) {
   const div = document.createElement('div');
-  div.className = 'sentence-item';
+  div.className = 'sentence-item' + (isWordMode ? ' word-mode' : '');
   div.dataset.id = mapping.id;
 
   const text = type === 'original' ? mapping.original : mapping.translated;
@@ -39,7 +40,7 @@ function createSentenceItem(mapping, type) {
     <button class="delete-btn" title="삭제 (양쪽 모두 삭제됨)">×</button>
   `;
 
-  // 호버 시 매핑된 문장 하이라이트
+  // 호버 시 매핑된 항목 하이라이트
   div.addEventListener('mouseenter', () => highlightPair(mapping.id, true));
   div.addEventListener('mouseleave', () => highlightPair(mapping.id, false));
 
@@ -72,7 +73,7 @@ function highlightPair(id, highlight) {
   }
 }
 
-// 문장 삭제 (양방향 동기화)
+// 항목 삭제 (양방향 동기화)
 function deleteSentence(id) {
   const originalItem = originalSentences.querySelector(`[data-id="${id}"]`);
   const translatedItem = translatedSentences.querySelector(`[data-id="${id}"]`);
@@ -100,21 +101,24 @@ function deleteSentence(id) {
     updateResults();
     updateCounts();
 
-    showToast('문장이 양쪽 모두에서 삭제되었습니다');
+    const label = isWordMode ? '단어가' : '문장이';
+    showToast(`${label} 양쪽 모두에서 삭제되었습니다`);
   }, 300);
 }
 
 // 결과 텍스트 업데이트
 function updateResults() {
-  originalResult.textContent = mappings.map(m => m.original).join(' ');
-  translatedResult.textContent = mappings.map(m => m.translated).join(' ');
+  const separator = isWordMode ? ', ' : ' ';
+  originalResult.textContent = mappings.map(m => m.original).join(separator);
+  translatedResult.textContent = mappings.map(m => m.translated).join(separator);
 }
 
-// 문장 개수 업데이트
+// 항목 개수 업데이트
 function updateCounts() {
   const count = mappings.length;
-  originalCount.textContent = `${count} 문장`;
-  translatedCount.textContent = `${count} 문장`;
+  const label = isWordMode ? '단어' : '문장';
+  originalCount.textContent = `${count} ${label}`;
+  translatedCount.textContent = `${count} ${label}`;
 }
 
 // UI 렌더링
@@ -123,7 +127,7 @@ function renderSentences() {
   translatedSentences.innerHTML = '';
 
   if (mappings.length === 0) {
-    originalSentences.innerHTML = '<div class="empty-state">번역할 텍스트를 입력하세요</div>';
+    originalSentences.innerHTML = '<div class="empty-state">번역할 텍스트를 입력하세요<br><small>쉼표(,)로 구분하면 단어별로 처리됩니다</small></div>';
     translatedSentences.innerHTML = '<div class="empty-state">번역 결과가 여기에 표시됩니다</div>';
     return;
   }
@@ -169,8 +173,11 @@ async function translate() {
     }
 
     mappings = data.mappings;
+    isWordMode = data.isWordMode || false;
     renderSentences();
-    showToast(`${mappings.length}개 문장이 번역되었습니다`);
+
+    const label = isWordMode ? '단어' : '문장';
+    showToast(`${mappings.length}개 ${label}이(가) 번역되었습니다`);
 
   } catch (error) {
     showToast(error.message, true);
