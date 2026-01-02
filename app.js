@@ -101,8 +101,20 @@ function highlightPair(id, highlight) {
   if (translatedItem) translatedItem.classList.toggle('highlighted', highlight);
 }
 
+// 삭제 진행 중 플래그 (중복 삭제 방지)
+let isDeleting = false;
+
 // 항목 삭제 (양방향 동기화)
 function deleteSentence(id) {
+  // 중복 삭제 방지
+  if (isDeleting) return;
+
+  // 해당 ID가 mappings에 존재하는지 확인
+  const targetMapping = mappings.find(m => m.id === id);
+  if (!targetMapping) return;
+
+  isDeleting = true;
+
   const originalItem = originalSentences.querySelector(`[data-id="${id}"]`);
   const translatedItem = translatedSentences.querySelector(`[data-id="${id}"]`);
 
@@ -110,18 +122,19 @@ function deleteSentence(id) {
   if (translatedItem) translatedItem.classList.add('deleting');
 
   setTimeout(() => {
+    // mappings에서 제거
     mappings = mappings.filter(m => m.id !== id);
 
-    if (originalItem) originalItem.remove();
-    if (translatedItem) translatedItem.remove();
-
+    // ID 재정렬
     mappings = mappings.map((m, index) => ({ ...m, id: index }));
 
-    updateResults();
-    updateCounts();
+    // 전체 UI 다시 렌더링 (ID 동기화 보장)
+    renderSentences();
 
     const label = isWordMode ? '단어가' : '문장이';
     showToast(`${label} 양쪽 모두에서 삭제되었습니다`);
+
+    isDeleting = false;
   }, 300);
 }
 
