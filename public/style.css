@@ -17,6 +17,27 @@ body {
   margin: 0 auto;
 }
 
+.top-nav {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.top-nav .nav-link,
+a.nav-link {
+  color: #3a7bd5;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  background: rgba(58, 123, 213, 0.1);
+  transition: all 0.2s;
+}
+
+.top-nav .nav-link:hover,
+a.nav-link:hover {
+  background: rgba(58, 123, 213, 0.2);
+  text-decoration: none;
+}
+
 header {
   text-align: center;
   margin-bottom: 30px;
